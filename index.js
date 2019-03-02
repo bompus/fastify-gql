@@ -94,6 +94,18 @@ module.exports = fp(async function (app, opts) {
   })
 
   app.decorate('graphql', fastifyGraphQl)
+  
+  fastifyGraphQl.setSchema = function(s) {
+    if (typeof s === 'string') {
+      schema = buildSchema(s)
+    } else {
+      schema = s;
+    }
+
+    // we should clear the caches, because they could be totally invalid now
+    lru.clear();
+    lruErrors.clear();
+  }
 
   fastifyGraphQl.extendSchema = function (s) {
     if (typeof s === 'string') {
